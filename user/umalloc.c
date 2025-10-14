@@ -88,3 +88,28 @@ malloc(uint nbytes)
         return 0;
   }
 }
+uint64 frag_bytes(void) {
+    struct header *hp;
+    uint64 total_allocated = 0;
+    uint64 total_used = 0;
+    
+    // Calculate total allocated memory and used memory
+    for(hp = freep; !(hp > freep && hp < (struct header*)((char*)freep + hp->s.size)); hp = (struct header*)((char*)hp + hp->s.size)) {
+        if(hp->s.size == 0)
+            break;
+            
+        total_allocated += hp->s.size * sizeof(Header);
+        
+        if(!hp->s.allocated) {
+            // Free block - no used bytes
+            continue;
+        } else {
+            // Allocated block - calculate used portion
+            // This assumes some tracking of actual requested size
+            // You'll need to modify the header to track this
+            total_used += /* actual requested size */;
+        }
+    }
+    
+    return total_allocated - total_used;
+}
